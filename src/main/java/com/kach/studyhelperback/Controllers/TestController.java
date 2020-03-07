@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
 public class TestController {
-
+    @GetMapping("/test")
+    public Integer[] test() {
+        return new Integer[]{1, 2, 3, 6, 4, 2, 4};
+    }
 //    User[] users = {
 //            new User(3, "AlexandrovAn", "Андрей Александров"),
 //            new User(1, "kachmazoff", "Александр Качамзов"),

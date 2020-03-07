@@ -55,11 +55,11 @@ public class Article {
         this.type = type;
     }
 
-    public Boolean getPublished() {
+    public Boolean getIsPublished() {
         return isPublished;
     }
 
-    public void setPublished(Boolean published) {
-        isPublished = published;
+    public void setPublished(Boolean isPublished) {
+        this.isPublished = isPublished;
     }
 }
