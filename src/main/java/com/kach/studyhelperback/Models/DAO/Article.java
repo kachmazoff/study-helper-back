@@ -1,5 +1,7 @@
 package com.kach.studyhelperback.Models.DAO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -47,6 +49,7 @@ public class Article {
         this.text = text;
     }
 
+//    @JsonIgnore
     public ArticleType getType() {
         return type;
     }
@@ -62,4 +65,8 @@ public class Article {
     public void setPublished(Boolean isPublished) {
         this.isPublished = isPublished;
     }
+
+//    public String getTypeName() {
+//        return this.type.getName();
+//    }
 }

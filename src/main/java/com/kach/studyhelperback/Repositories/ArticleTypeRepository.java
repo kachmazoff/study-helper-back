@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface ArticleTypeRepository extends CrudRepository<ArticleType, Integer> {
     Optional<ArticleType> findByName(String name);
+    boolean existsByName(String name);
+    boolean existsByNameAndIdNot(String name, Integer id);
 }
