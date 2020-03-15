@@ -21,6 +21,13 @@ public class Edge {
     @NotNull
     private Double weight;
 
+    public Edge() {}
+
+    public Edge(Article from, Article to) {
+        this.from = from;
+        this.to = to;
+    }
+
     public Integer getId() {
         return id;
     }
