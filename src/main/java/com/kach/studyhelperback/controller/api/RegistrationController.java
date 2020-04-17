@@ -29,7 +29,7 @@ public class RegistrationController {
     @GetMapping("/test")
     public ResponseEntity test() {
         User user = userService.getUser("root");
-        Set<Role> roles =  user.getRoles();
+        Set<Role> roles = user.getRoles();
         for (Role role : roles) {
             System.out.println(role.getName());
         }

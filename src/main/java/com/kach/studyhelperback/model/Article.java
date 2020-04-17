@@ -14,7 +14,7 @@ public class Article extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "article_type_id", nullable = false)
+    @JoinColumn(name = "article_types_id", nullable = false)
     private ArticleType type;
 
     private Boolean isPublished = false;
