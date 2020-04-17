@@ -1,5 +1,7 @@
 package com.kach.studyhelperback.Models.DAO;
 
+import com.kach.studyhelperback.model.Article;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
