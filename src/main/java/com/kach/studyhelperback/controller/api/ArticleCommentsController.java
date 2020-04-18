@@ -16,13 +16,13 @@ public class ArticleCommentsController {
     @Autowired
     ArticleCommentsService articleCommentsService;
 
-    @PostMapping("")
+    @PostMapping("/add")
     public ResponseEntity addComment(@RequestBody ArticleComments articleComment){
         articleCommentsService.addArticleComment(articleComment);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping("/addReply")
     public ResponseEntity addReplyComment(@RequestBody ArticleComments articleComment,
                                           @RequestBody ArticleComments replyArticleComment){
         articleCommentsService.addReplyArticleComment(articleComment, replyArticleComment);
