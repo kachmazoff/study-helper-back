@@ -14,7 +14,7 @@ public class ArticleComments extends BaseEntity {
     String text;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "reply_comment_id", nullable = false)
+    @JoinColumn(name = "reply_comment_id")
     ArticleComments replyComment;
 
     public Article getArticle() {
