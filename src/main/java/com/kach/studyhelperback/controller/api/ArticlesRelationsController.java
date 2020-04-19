@@ -19,5 +19,5 @@ public class ArticlesRelationsController {
         for (RelationsRequestBody relationsRequestBody : bodies) {
             graphService.addRelation(relationsRequestBody.getCurId(), relationsRequestBody.getFromId());
         }
-    }//
+    }
 }
