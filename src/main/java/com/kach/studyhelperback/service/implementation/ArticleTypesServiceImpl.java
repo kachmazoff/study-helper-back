@@ -33,6 +33,16 @@ public class ArticleTypesServiceImpl implements ArticleTypesService {
     }
 
     @Override
+    public ArticleType getType(Long id) {
+        Optional<ArticleType> articleType = articleTypeRepository.findById(id);
+        if (articleType.isEmpty()) {
+            throw new IllegalArgumentException("This type does not exist");
+        }
+
+        return articleType.get();
+    }
+
+    @Override
     public void addType(ArticleType type) {
         if (articleTypeRepository.existsByName(type.getName())) {
             throw new IllegalArgumentException("Type with name '" + type.getName() + "' is already exists");

@@ -1,6 +1,7 @@
 package com.kach.studyhelperback.controller.api;
 
 import com.kach.studyhelperback.model.Article;
+import com.kach.studyhelperback.model.ArticleComments;
 import com.kach.studyhelperback.model.ArticleType;
 //import com.kach.studyhelperback.models.Edge;
 //import com.kach.studyhelperback.dto.Helpers.EdgeMin;
@@ -8,6 +9,7 @@ import com.kach.studyhelperback.repository.ArticleRepository;
 import com.kach.studyhelperback.repository.ArticleTypeRepository;
 //import com.kach.studyhelperback.Repositories.EdgeMinRepository;
 //import com.kach.studyhelperback.repositories.EdgeRepository;
+import com.kach.studyhelperback.service.ArticleCommentsService;
 import com.kach.studyhelperback.service.ArticleService;
 import com.kach.studyhelperback.service.ArticleStatService;
 import com.kach.studyhelperback.service.ArticleTypesService;
@@ -40,15 +42,21 @@ public class ArticlesController {
     ArticleTypesService articleTypesService;
 
     @Autowired
-    ArticleStatService articleStatService;
+    ArticleCommentsService articleCommentsService;
 
     @GetMapping("")
-    public List<Article> getAllArticles(@RequestParam Optional<String> type) {
+    public List<Article> getAllArticles(@RequestParam Optional<Long> type) {
 
         if (type.isEmpty())
             return articleService.getAllArticles();
         else
             return articleService.getAllArticles(articleTypesService.getType(type.get()));
+    }
+
+    @GetMapping("/my")
+    @PreAuthorize("isAuthenticated()")
+    public List<Article> getAllMyArticles() {
+        return articleService.getAllMyArticles();
     }
 
     @PostMapping("")
@@ -75,6 +83,7 @@ public class ArticlesController {
     }
 
     @PostMapping("/{id}/delete")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity deleteArticle(@PathVariable("id") Long id) {
         articleService.deleteArticle(id);
         return ResponseEntity.ok(HttpStatus.OK);
@@ -91,6 +100,11 @@ public class ArticlesController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @GetMapping("/types/{id}")
+    public ArticleType getArticleType(@PathVariable("id") Long id) {
+        return articleTypesService.getType(id);
+    }
+
     @PostMapping("/types/{id}")
     public ResponseEntity editArticleType(@PathVariable("id") Long id, @RequestBody ArticleType articleType) {
         articleTypesService.updateType(id, articleType);
@@ -103,9 +117,18 @@ public class ArticlesController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/stat")
-    public Long getArticleStat(@PathVariable("id") Long articleId){
-        return articleStatService.getArticleStat(articleId);
+
+    @GetMapping("/{id}/comments")
+    public List<ArticleComments> getArticleComments (@PathVariable("id") Long articleId){
+        return articleCommentsService.getArticleComments(articleId);
+    }
+
+    @PostMapping("/{id}/comments")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity addComment(@PathVariable("id") Long articleId, @RequestBody ArticleComments articleComment){
+        articleComment.setArticle(articleService.getArticle(articleId));
+        articleCommentsService.addArticleComment(articleComment);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
 //    @GetMapping("/{id}/relations")

@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface ArticleRepository extends CrudRepository<Article, Long> {
     List<Article> findAllByType(ArticleType type);
+    List<Article> findAllByCreator_Id(Long id);
 //    Iterable<Article> findAllByTypeName(String typeName);
     List<Article> findAllByTypeId(Integer typeId);
 //    Optional<ArticleMin> findBy
