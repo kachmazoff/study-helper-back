@@ -49,6 +49,13 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public List<Article> getAllMyArticles() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currUser = userService.getUser(authentication.getPrincipal().toString());
+        return articleRepository.findAllByCreator_Id(currUser.getId());
+    }
+
+    @Override
     public void addArticle(Article article) {
         if (article.getTitle() == null || article.getType() == null) {
             throw new IllegalArgumentException("Header or articleType is undefined");
