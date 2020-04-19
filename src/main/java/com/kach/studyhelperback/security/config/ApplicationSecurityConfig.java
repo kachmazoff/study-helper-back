@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
 
 import javax.crypto.SecretKey;
 
@@ -43,6 +44,12 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .cors().configurationSource(request -> {
+                    CorsConfiguration conf = new CorsConfiguration().applyPermitDefaultValues();
+                    conf.addAllowedHeader("Authorization");
+                    conf.addExposedHeader("Authorization");
+                    return conf;
+                }).and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -52,8 +59,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 //                .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
                 .antMatchers("/api/**").permitAll()//hasAnyRole()//.hasRole(STUDENT.name())
-                .anyRequest()
-                .authenticated();
+//                .anyRequest()
+//                .authenticated();
+        ;
     }
 
     @Override

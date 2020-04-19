@@ -2,9 +2,14 @@ package com.kach.studyhelperback.service.implementation;
 
 import com.kach.studyhelperback.model.Article;
 import com.kach.studyhelperback.model.ArticleType;
+import com.kach.studyhelperback.model.User;
 import com.kach.studyhelperback.repository.ArticleRepository;
 import com.kach.studyhelperback.service.ArticleService;
+import com.kach.studyhelperback.service.LogService;
+import com.kach.studyhelperback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +21,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     ArticleRepository articleRepository;
+    @Autowired
+    LogService logService;
+    @Autowired
+    UserService userService;
 
     @Override
     public Article getArticle(Long id) {
@@ -23,7 +32,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (article.isEmpty()) {
             throw new IllegalArgumentException("Not found");
         }
-
+        logService.log(article.get());
         return article.get();
     }
 
@@ -45,6 +54,10 @@ public class ArticleServiceImpl implements ArticleService {
             throw new IllegalArgumentException("Header or articleType is undefined");
         }
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User creator = userService.getUser(authentication.getPrincipal().toString());
+
+        article.setCreator(creator);
         article.setId(null);
         article.setPublished(false);
         if (article.getContent() == null)
