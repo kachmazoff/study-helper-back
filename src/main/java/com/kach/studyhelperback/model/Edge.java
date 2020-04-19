@@ -1,4 +1,4 @@
-//package com.kach.studyhelperback.models.DAO;
+//package com.kach.studyhelperback.model;
 //
 //import javax.persistence.*;
 //import javax.validation.constraints.NotNull;

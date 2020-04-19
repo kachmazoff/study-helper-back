@@ -10,6 +10,7 @@ import com.kach.studyhelperback.repository.ArticleTypeRepository;
 //import com.kach.studyhelperback.repositories.EdgeRepository;
 import com.kach.studyhelperback.service.ArticleService;
 import com.kach.studyhelperback.service.ArticleTypesService;
+import com.kach.studyhelperback.service.GraphService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,9 @@ public class ArticlesController {
 
     @Autowired
     ArticleTypesService articleTypesService;
+
+    @Autowired
+    GraphService graphService;
 
     @GetMapping("")
     public List<Article> getAllArticles(@RequestParam Optional<String> type) {
@@ -98,10 +102,10 @@ public class ArticlesController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-//    @GetMapping("/{id}/relations")
-//    public List<Edge> getRelations(@PathVariable("id") Integer id) {
-//        return edgeRepository.findAllByFrom_Id(id);
-//    }
+    @GetMapping("/{id}/nearest")
+    public List<Article> getNearestArticles(@PathVariable("id") Long articleId) {
+        return graphService.nearestArticles(articleId);
+    }
 //
 //    @GetMapping("/{id}/relationsmin")
 //    public List<EdgeMin> getMinRelations(@PathVariable("id") Integer id) {
