@@ -120,6 +120,14 @@ public class ArticlesController {
         return articleCommentsService.getArticleComments(articleId);
     }
 
+    @PostMapping("/{id}/comments")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity addComment(@PathVariable("id") Long articleId, @RequestBody ArticleComments articleComment){
+        articleComment.setArticle(articleService.getArticle(articleId));
+        articleCommentsService.addArticleComment(articleComment);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
 //    @GetMapping("/{id}/relations")
 //    public List<Edge> getRelations(@PathVariable("id") Integer id) {
 //        return edgeRepository.findAllByFrom_Id(id);
