@@ -13,6 +13,7 @@ import com.kach.studyhelperback.service.ArticleTypesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public class ArticlesController {
     }
 
     @PostMapping("")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity addArticle(@RequestBody Article article) {
         ArticleType type = articleTypeRepository.findById(article.getType().getId()).get();
         article.setType(type);
@@ -61,6 +63,7 @@ public class ArticlesController {
     }
 
     @PostMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity editArticle(@PathVariable("id") Long id, @RequestBody Article article) {
         articleService.updateArticle(id, article);
         return ResponseEntity.ok(HttpStatus.OK);
