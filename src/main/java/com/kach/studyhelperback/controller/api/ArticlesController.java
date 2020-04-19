@@ -11,6 +11,7 @@ import com.kach.studyhelperback.repository.ArticleTypeRepository;
 //import com.kach.studyhelperback.repositories.EdgeRepository;
 import com.kach.studyhelperback.service.ArticleCommentsService;
 import com.kach.studyhelperback.service.ArticleService;
+import com.kach.studyhelperback.service.ArticleStatService;
 import com.kach.studyhelperback.service.ArticleTypesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -114,6 +116,7 @@ public class ArticlesController {
         articleTypesService.deleteType(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
 
     @GetMapping("/{id}/comments")
     public List<ArticleComments> getArticleComments (@PathVariable("id") Long articleId){
