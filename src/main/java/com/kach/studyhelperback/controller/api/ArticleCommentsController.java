@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/comments")
 public class ArticleCommentsController {
@@ -16,21 +14,21 @@ public class ArticleCommentsController {
     @Autowired
     ArticleCommentsService articleCommentsService;
 
-    @PostMapping("/add")
+    @PostMapping("")
     public ResponseEntity addComment(@RequestBody ArticleComments articleComment){
         articleCommentsService.addArticleComment(articleComment);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("/addReply")
-    public ResponseEntity addReplyComment(@RequestBody ArticleComments articleComment,
+    @PostMapping("/{id}/reply")
+    public ResponseEntity addReplyComment(@PathVariable("id") Long articleId,
                                           @RequestBody ArticleComments replyArticleComment){
-        articleCommentsService.addReplyArticleComment(articleComment, replyArticleComment);
+        articleCommentsService.addReplyArticleComment(articleId, replyArticleComment);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public List<ArticleComments> getArticleComment(@PathVariable("id") Long articleId){
-        return articleCommentsService.getArticleComment(articleId);
-    }
+//    @GetMapping("/{id}")
+//    public List<ArticleComments> getArticleComments(@PathVariable("id") Long articleId){
+//        return articleCommentsService.getArticleComments(articleId);
+//    }
 }

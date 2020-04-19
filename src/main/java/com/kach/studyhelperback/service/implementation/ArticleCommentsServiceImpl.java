@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ArticleCommentsServiceImpl implements ArticleCommentsService {
@@ -27,11 +28,24 @@ public class ArticleCommentsServiceImpl implements ArticleCommentsService {
         articleCommentsRepository.save(articleComment);
     }
 
+//    @Override
+//    public void addReplyArticleComment(ArticleComments articleComment, ArticleComments replyArticleComment) {
+//        if (articleComment.getArticle() == null || articleComment.getText() == null) {
+//            throw new IllegalArgumentException("Article or text comment is undefined");
+//        }
+//
+//        articleComment.setId(null);
+//        if (articleComment.getText() == null)
+//            articleComment.setText("");
+//        articleComment.setReplyComment(replyArticleComment);
+//    }
+
     @Override
-    public void addReplyArticleComment(ArticleComments articleComment, ArticleComments replyArticleComment) {
-        if (articleComment.getArticle() == null || articleComment.getText() == null) {
-            throw new IllegalArgumentException("Article or text comment is undefined");
+    public void addReplyArticleComment(Long articleCommentId, ArticleComments replyArticleComment) {
+        if(articleCommentsRepository.findById(articleCommentId).isEmpty()){
+            throw new IllegalArgumentException("Not found");
         }
+        ArticleComments articleComment = articleCommentsRepository.findById(articleCommentId).get();
 
         articleComment.setId(null);
         if (articleComment.getText() == null)
@@ -40,12 +54,17 @@ public class ArticleCommentsServiceImpl implements ArticleCommentsService {
     }
 
     @Override
-    public List<ArticleComments> getArticleComment(Long articleId) {
-        return articleCommentsRepository.findAllByArticleId(articleId);
+    public List<ArticleComments> getArticleComments(Long articleId) {
+        return articleCommentsRepository.findAllByArticle_Id(articleId);
     }
 
     @Override
-    public List<ArticleComments> getArticleComment(Article article) {
+    public List<ArticleComments> getArticleComments(Article article) {
         return articleCommentsRepository.findAllByArticle(article);
+    }
+
+    @Override
+    public Optional<ArticleComments> getArticleComment(Long articleCommentId) {
+        return articleCommentsRepository.findById(articleCommentId);
     }
 }
