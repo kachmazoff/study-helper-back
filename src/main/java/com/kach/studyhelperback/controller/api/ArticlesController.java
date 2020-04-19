@@ -38,12 +38,18 @@ public class ArticlesController {
     ArticleTypesService articleTypesService;
 
     @GetMapping("")
-    public List<Article> getAllArticles(@RequestParam Optional<String> type) {
+    public List<Article> getAllArticles(@RequestParam Optional<Long> type) {
 
         if (type.isEmpty())
             return articleService.getAllArticles();
         else
             return articleService.getAllArticles(articleTypesService.getType(type.get()));
+    }
+
+    @GetMapping("/my")
+    @PreAuthorize("isAuthenticated()")
+    public List<Article> getAllMyArticles() {
+        return articleService.getAllMyArticles();
     }
 
     @PostMapping("")
@@ -84,6 +90,11 @@ public class ArticlesController {
     public ResponseEntity createArticleType(@RequestBody ArticleType articleType) {
         articleTypesService.addType(articleType);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/types/{id}")
+    public ArticleType getArticleType(@PathVariable("id") Long id) {
+        return articleTypesService.getType(id);
     }
 
     @PostMapping("/types/{id}")
