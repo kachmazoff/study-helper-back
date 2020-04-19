@@ -17,6 +17,18 @@ public class ArticleComments extends BaseEntity {
     @JoinColumn(name = "reply_comment_id")
     ArticleComments replyComment;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "creator_id", nullable = false)
+    private User creator;
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
+
     public Article getArticle() {
         return article;
     }

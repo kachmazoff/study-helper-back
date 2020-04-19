@@ -2,9 +2,13 @@ package com.kach.studyhelperback.service.implementation;
 
 import com.kach.studyhelperback.model.Article;
 import com.kach.studyhelperback.model.ArticleComments;
+import com.kach.studyhelperback.model.User;
 import com.kach.studyhelperback.repository.ArticleCommentsRepository;
 import com.kach.studyhelperback.service.ArticleCommentsService;
+import com.kach.studyhelperback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +20,19 @@ public class ArticleCommentsServiceImpl implements ArticleCommentsService {
     @Autowired
     ArticleCommentsRepository articleCommentsRepository;
 
+    @Autowired
+    UserService userService;
+
     @Override
     public void addArticleComment(ArticleComments articleComment) {
         if (articleComment.getArticle() == null || articleComment.getText() == null) {
             throw new IllegalArgumentException("Article or text comment is undefined");
         }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User creator = userService.getUser(authentication.getPrincipal().toString());
+
+        articleComment.setCreator(creator);
 
         articleComment.setId(null);
         if (articleComment.getText() == null)
@@ -46,6 +58,11 @@ public class ArticleCommentsServiceImpl implements ArticleCommentsService {
             throw new IllegalArgumentException("Not found");
         }
         ArticleComments articleComment = articleCommentsRepository.findById(articleCommentId).get();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User creator = userService.getUser(authentication.getPrincipal().toString());
+
+        replyArticleComment.setCreator(creator);
 
         articleComment.setId(null);
         if (articleComment.getText() == null)

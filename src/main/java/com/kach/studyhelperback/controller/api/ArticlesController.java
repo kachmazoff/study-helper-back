@@ -75,6 +75,7 @@ public class ArticlesController {
     }
 
     @PostMapping("/{id}/delete")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity deleteArticle(@PathVariable("id") Long id) {
         articleService.deleteArticle(id);
         return ResponseEntity.ok(HttpStatus.OK);
