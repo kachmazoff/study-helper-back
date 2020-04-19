@@ -8,4 +8,5 @@ public interface GraphService {
 //    void topSort();
 //    List<Article> findPath(Long startId, Long endId);
     List<Article> nearestArticles(Long articleId);
+    void addRelation(Long curId, Long fromId);
 }

@@ -6,10 +6,12 @@ import com.kach.studyhelperback.repository.ArticlesRelationsRepository;
 import com.kach.studyhelperback.service.ArticleService;
 import com.kach.studyhelperback.service.GraphService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class GraphServiceImpl implements GraphService {
 //    @Override
 //    public void topSort() {
@@ -39,5 +41,13 @@ public class GraphServiceImpl implements GraphService {
             nearArticles.add(articleService.getArticle(articlesRelations.getId()));
         }
         return nearArticles;
+    }
+
+    @Override
+    public void addRelation(Long curId, Long fromId) {
+        ArticlesRelations articlesRelation = new ArticlesRelations();
+        articlesRelation.setFrom(articleService.getArticle(fromId));
+        articlesRelation.setTo(articleService.getArticle(curId));
+        articlesRelationsRepository.save(articlesRelation);
     }
 }
