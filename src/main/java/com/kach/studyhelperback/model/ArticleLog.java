@@ -5,8 +5,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "article_log")
 public class ArticleLog extends BaseEntity {
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "articles_id", nullable = false)
     private Article article;
 
@@ -17,5 +16,4 @@ public class ArticleLog extends BaseEntity {
     public void setArticle(Article article) {
         this.article = article;
     }
-
 }

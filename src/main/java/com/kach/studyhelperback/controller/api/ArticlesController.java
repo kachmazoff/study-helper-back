@@ -1,6 +1,7 @@
 package com.kach.studyhelperback.controller.api;
 
 import com.kach.studyhelperback.model.Article;
+import com.kach.studyhelperback.model.ArticleComments;
 import com.kach.studyhelperback.model.ArticleType;
 //import com.kach.studyhelperback.models.Edge;
 //import com.kach.studyhelperback.dto.Helpers.EdgeMin;
@@ -8,6 +9,7 @@ import com.kach.studyhelperback.repository.ArticleRepository;
 import com.kach.studyhelperback.repository.ArticleTypeRepository;
 //import com.kach.studyhelperback.Repositories.EdgeMinRepository;
 //import com.kach.studyhelperback.repositories.EdgeRepository;
+import com.kach.studyhelperback.service.ArticleCommentsService;
 import com.kach.studyhelperback.service.ArticleService;
 import com.kach.studyhelperback.service.ArticleTypesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,9 @@ public class ArticlesController {
 
     @Autowired
     ArticleTypesService articleTypesService;
+
+    @Autowired
+    ArticleCommentsService articleCommentsService;
 
     @GetMapping("")
     public List<Article> getAllArticles(@RequestParam Optional<Long> type) {
@@ -76,6 +81,7 @@ public class ArticlesController {
     }
 
     @PostMapping("/{id}/delete")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity deleteArticle(@PathVariable("id") Long id) {
         articleService.deleteArticle(id);
         return ResponseEntity.ok(HttpStatus.OK);
@@ -106,6 +112,19 @@ public class ArticlesController {
     @PostMapping("/types/{id}/delete")
     public ResponseEntity deleteArticleType(@PathVariable("id") Long id) {
         articleTypesService.deleteType(id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<ArticleComments> getArticleComments (@PathVariable("id") Long articleId){
+        return articleCommentsService.getArticleComments(articleId);
+    }
+
+    @PostMapping("/{id}/comments")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity addComment(@PathVariable("id") Long articleId, @RequestBody ArticleComments articleComment){
+        articleComment.setArticle(articleService.getArticle(articleId));
+        articleCommentsService.addArticleComment(articleComment);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
