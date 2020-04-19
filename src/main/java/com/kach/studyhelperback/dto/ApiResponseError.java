@@ -1,10 +1,10 @@
-package com.kach.studyhelperback.Models;
+package com.kach.studyhelperback.dto;
 
-public class ApiError {
-    int errorCode;
+public class ApiResponseError extends ApiResponseTemplate {
     private String message;
 
-    public ApiError(String message) {
+    public ApiResponseError(Integer status, String message) {
+        super(status, false);
         this.message = message;
     }
 
