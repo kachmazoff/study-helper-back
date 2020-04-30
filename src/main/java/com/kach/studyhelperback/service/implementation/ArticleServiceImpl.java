@@ -4,6 +4,7 @@ import com.kach.studyhelperback.model.Article;
 import com.kach.studyhelperback.model.ArticleType;
 import com.kach.studyhelperback.model.User;
 import com.kach.studyhelperback.repository.ArticleRepository;
+import com.kach.studyhelperback.repository.ArticleTypeRepository;
 import com.kach.studyhelperback.service.ArticleService;
 import com.kach.studyhelperback.service.LogService;
 import com.kach.studyhelperback.service.UserService;
@@ -19,6 +20,8 @@ import java.util.Optional;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
+    @Autowired
+    ArticleTypeRepository articleTypeRepository;
     @Autowired
     ArticleRepository articleRepository;
     @Autowired
@@ -79,15 +82,15 @@ public class ArticleServiceImpl implements ArticleService {
         }
         Article target = articleRepository.findById(articleId).get();
 
-//        if (article.getType() != null) {
-//            if (article.getType().getId() != null) {
-//                Integer typeId = article.getType().getId();
+        if (updatedArticle.getType() != null) {
+            if (updatedArticle.getType().getId() != null) {
+                Long typeId = updatedArticle.getType().getId();
 //                if (!articleTypeRepository.existsById(typeId))
 //                    return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
-//                // TODO: optimization
-//                optionalArticle.get().setType(articleTypeRepository.findById(typeId).get());
-//            }
-//        }
+                // TODO: optimization
+                target.setType(articleTypeRepository.findById(typeId).get());
+            }
+        }
 
         if (updatedArticle.getTitle() != null)  target.setTitle(updatedArticle.getTitle());
         if (updatedArticle.getContent() != null)  target.setContent(updatedArticle.getContent());
