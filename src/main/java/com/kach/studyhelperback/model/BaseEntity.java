@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @MappedSuperclass
 public abstract class BaseEntity {
@@ -64,5 +65,21 @@ public abstract class BaseEntity {
     @Override
     public String toString() {
         return String.format("Entity %s", getClass().getName());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseEntity that = (BaseEntity) o;
+        return getId().equals(that.getId()) &&
+                getCreated().equals(that.getCreated()) &&
+                getUpdated().equals(that.getUpdated()) &&
+                getStatus() == that.getStatus();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getCreated(), getUpdated(), getStatus());
     }
 }

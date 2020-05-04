@@ -14,4 +14,5 @@ public interface ArticleLogRepository extends JpaRepository<ArticleLog, Long> {
 //    List<ArticleLog> findAllByArticle_Creator_IdAndArticle_Id(Long articleCreatorId, Long articleId);
     List<ArticleLog> findAllByArticle_Creator_Id(Long articleCreatorId);
     List<ArticleLog> findAllByArticle_Creator_IdAndArticle_Created(Long article_creator_id, Date article_created);
+    List<ArticleLog> findAllByUser_Id(Long userId);
 }
