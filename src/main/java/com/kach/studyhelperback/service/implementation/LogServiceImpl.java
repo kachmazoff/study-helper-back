@@ -2,8 +2,11 @@ package com.kach.studyhelperback.service.implementation;
 
 import com.kach.studyhelperback.model.Article;
 import com.kach.studyhelperback.model.ArticleLog;
+import com.kach.studyhelperback.model.User;
 import com.kach.studyhelperback.repository.ArticleLogRepository;
+import com.kach.studyhelperback.service.AuthService;
 import com.kach.studyhelperback.service.LogService;
+import com.kach.studyhelperback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +18,24 @@ public class LogServiceImpl implements LogService {
     @Autowired
     ArticleLogRepository articleLogRepository;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    AuthService authService;
+
+    @Override
+    public List<ArticleLog> getLogs(User user) {
+        return articleLogRepository.findAllByUser_Id(user.getId());
+    }
+
     @Override
     public void log(Article article) {
         ArticleLog log = new ArticleLog();
         log.setArticle(article);
+        if (authService.isAuthenticated()) {
+            log.setUser(authService.getActiveUser());
+        }
         articleLogRepository.save(log);
     }
 

@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -33,13 +37,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUser(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("Not found");
+        }
+        return user.get();
+    }
+
+    @Override
     public void changePassword(String username, String oldPassword, String newPassword) {
 
     }
 
     @Override
     public void createNewUserRole(String roleName) {
-
+        Role role = new Role();
+        role.setName(roleName);
+        roleRepository.save(role);
     }
 
     @Override
@@ -48,15 +63,44 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Iterable<Role> getUserRoles(String username) {
+    public List<Role> getUserRoles(String username) {
         // TODO: find user by login
         //then user.roles
         return roleRepository.findAll();
     }
 
     @Override
-    public void addRoleToUser(String username, String roleName) {
+    public List<Role> getAllRoles() {
+        List<Role> roles = new ArrayList<>();
+        roles.addAll(roleRepository.findAll());
+        return roles;
+    }
 
+    @Override
+    public Role getRole(Long id) {
+        Optional<Role> role = roleRepository.findById(id);
+        if (role.isEmpty()) {
+            throw new IllegalArgumentException("Not found");
+        }
+        return role.get();
+    }
+
+    @Override
+    public void addRoleToUser(User user, Role role) {
+        user.addNewRole(role);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void addRoleToUser(String username, String roleName) {
+        User user = userRepository.findByUsername(username).get();
+        Role role = roleRepository.findByName(roleName).get();
+        addRoleToUser(user, role);
+    }
+
+    @Override
+    public void addRoleToUser(Long userId, Long roleId) {
+        addRoleToUser(getUser(userId), getRole(roleId));
     }
 
     @Override
