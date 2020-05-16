@@ -22,7 +22,12 @@ public class TestController {
 
     @PostMapping("/map")
     ResponseEntity mapBody(@RequestBody Map<String, Object> body) {
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 
+    @GetMapping("/secure/role")
+    @PreAuthorize("isAuthenticated()&&hasRole('admin')") // Not working. Need role checking in java
+    ResponseEntity testRoleSecure() {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }

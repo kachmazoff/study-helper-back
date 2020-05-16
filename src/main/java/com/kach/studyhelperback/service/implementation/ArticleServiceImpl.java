@@ -1,10 +1,13 @@
 package com.kach.studyhelperback.service.implementation;
 
 import com.kach.studyhelperback.model.Article;
+import com.kach.studyhelperback.model.ArticleLog;
 import com.kach.studyhelperback.model.ArticleType;
 import com.kach.studyhelperback.model.User;
 import com.kach.studyhelperback.repository.ArticleRepository;
+import com.kach.studyhelperback.repository.ArticleTypeRepository;
 import com.kach.studyhelperback.service.ArticleService;
+import com.kach.studyhelperback.service.AuthService;
 import com.kach.studyhelperback.service.LogService;
 import com.kach.studyhelperback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,11 +24,15 @@ import java.util.Optional;
 public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
+    ArticleTypeRepository articleTypeRepository;
+    @Autowired
     ArticleRepository articleRepository;
     @Autowired
     LogService logService;
     @Autowired
     UserService userService;
+    @Autowired
+    AuthService authService;
 
     @Override
     public Article getArticle(Long id) {
@@ -32,8 +40,30 @@ public class ArticleServiceImpl implements ArticleService {
         if (article.isEmpty()) {
             throw new IllegalArgumentException("Not found");
         }
-        logService.log(article.get());
         return article.get();
+    }
+
+    @Override
+    public Article getFullArticle(Long id) {
+        Article article = getArticle(id);
+        logService.log(article);
+        return article;
+    }
+
+    @Override
+    public List<Article> getNewArticles() {
+        List<Article> articles = new ArrayList<>();
+        articleRepository.findAll().forEach(articles::add);
+        Collections.reverse(articles);
+
+        List<Article> newArticles = new ArrayList<>();
+        for (int i = 0; i < 10 && i < articles.size(); i++)
+            newArticles.add(articles.get(i));
+
+//        articleRepository.findAll(Sort.by()).forEach(articles::add);
+//        Date date = new Date();
+//        date.getTime();
+        return newArticles;
     }
 
     @Override
@@ -46,6 +76,24 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<Article> getAllArticles(ArticleType type) {
         return articleRepository.findAllByType(type);
+    }
+
+    @Override
+    public List<Article> getLastViewedArticles() {
+        List<ArticleLog> logs = logService.getLogs(authService.getActiveUser());
+        Collections.reverse(logs);
+
+        List<Long> articlesId = new ArrayList<>();
+        List<Article> articles = new ArrayList<>();
+
+        for (int i = 0; i < logs.size() && articlesId.size() < 5; i++) {
+            if (!articlesId.contains(logs.get(i).getArticle().getId())) {
+                articlesId.add(logs.get(i).getArticle().getId());
+                articles.add(logs.get(i).getArticle());
+            }
+        }
+
+        return articles;
     }
 
     @Override
@@ -79,15 +127,15 @@ public class ArticleServiceImpl implements ArticleService {
         }
         Article target = articleRepository.findById(articleId).get();
 
-//        if (article.getType() != null) {
-//            if (article.getType().getId() != null) {
-//                Integer typeId = article.getType().getId();
+        if (updatedArticle.getType() != null) {
+            if (updatedArticle.getType().getId() != null) {
+                Long typeId = updatedArticle.getType().getId();
 //                if (!articleTypeRepository.existsById(typeId))
 //                    return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
-//                // TODO: optimization
-//                optionalArticle.get().setType(articleTypeRepository.findById(typeId).get());
-//            }
-//        }
+                // TODO: optimization
+                target.setType(articleTypeRepository.findById(typeId).get());
+            }
+        }
 
         if (updatedArticle.getTitle() != null)  target.setTitle(updatedArticle.getTitle());
         if (updatedArticle.getContent() != null)  target.setContent(updatedArticle.getContent());
