@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "likes")
-public class Likes extends BaseEntity{
+public class Like extends BaseEntity{
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "articles_id", nullable = false)
     private Article article;
