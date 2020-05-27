@@ -12,7 +12,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     List<Like> findAllByArticle(Article article);
     List<Like> findAllByArticle_Id(Long articleId);
     List<Like> findAllByUser_Id(Long userId);
-    List<Like> findByUser_idAndArticle_id(Long userId, Long articleId);
+    List<Like> findByUser_IdAndArticle_Id(Long userId, Long articleId);
 
 
 }

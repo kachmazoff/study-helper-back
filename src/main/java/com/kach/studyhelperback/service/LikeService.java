@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface LikeService {
-    void Likes(Article article) throws Exception;
+    void addLike(Article article) throws Exception;
     List<Like> getLikes();
     List<Like> getLikes(Article article);
     List<Like> getLikes(Long articleId);

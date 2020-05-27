@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/api/likes")
 public class LikeController {
 
     @Autowired
@@ -20,18 +22,18 @@ public class LikeController {
     @Autowired
     AuthService authService;
 
-    @GetMapping("/likes")
+    @GetMapping("/all")
     public List<Like> getAllLikes(){
         return likeRepository.findAll();
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("user/{id}/favorites")
+    @GetMapping("/user/{id}/favorites")
     public List<Like> getLikesOfUser(@PathVariable("id") Long userId){
         return likeRepository.findAllByUser_Id(userId);
     }
 
-    @GetMapping("article/{id}/likes")
+    @GetMapping("/article/{id}")
     public List<Like> getLikeOfArticle(@PathVariable("id") Long articleId){
         return likeRepository.findAllByArticle_Id(articleId);
     }

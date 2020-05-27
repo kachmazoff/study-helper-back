@@ -27,7 +27,7 @@ public class LikeServiceImpl implements LikeService {
 
 
     @Override
-    public void Likes(Article article) throws Exception {
+    public void addLike(Article article) throws Exception {
         if (authService.isAuthenticated()) {
             if (!checkLikedArticle(article.getId(), authService.getActiveUser().getId())){
                 Like like = new Like();
@@ -59,7 +59,7 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public boolean checkLikedArticle(Long articleId, Long userId) {
-        if (likeRepository.findByUser_idAndArticle_id(articleId, userId) == null){
+        if (likeRepository.findByUser_IdAndArticle_Id(articleId, userId) == null){
             return false;
         }
         return true;
