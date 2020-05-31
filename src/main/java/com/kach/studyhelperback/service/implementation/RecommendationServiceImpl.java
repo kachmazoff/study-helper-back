@@ -4,6 +4,8 @@ import com.kach.studyhelperback.model.Article;
 import com.kach.studyhelperback.model.ArticleLog;
 import com.kach.studyhelperback.model.ArticlesRelations;
 import com.kach.studyhelperback.model.User;
+import com.kach.studyhelperback.model.comparator.ArticlesRelationsUsageComparator;
+import com.kach.studyhelperback.model.comparator.ArticlesRelationsWeightComparator;
 import com.kach.studyhelperback.service.ArticleService;
 import com.kach.studyhelperback.service.ArticlesRelationsService;
 import com.kach.studyhelperback.service.LogService;
@@ -53,6 +55,8 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Override
     public List<Article> get(User user, Article article) {
         List<ArticlesRelations> relations = articlesRelationsService.getRelations(article, 1);
+        relations.sort(new ArticlesRelationsWeightComparator().thenComparing(new ArticlesRelationsUsageComparator()));
+
         List<Article> articles = new ArrayList<>();
 
         for (ArticlesRelations relation : relations) {
@@ -104,5 +108,19 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Override
     public List<Article> getHotArticles() {
         return null;
+    }
+
+    @Override
+    public Article useRecommendation(Article from, Article to, Double deltaWeight) {
+        articlesRelationsService.useOrAddRelation(from, to, deltaWeight);
+        return to;
+    }
+
+    @Override
+    public Article useRecommendation(Long fromId, Long toId, Double deltaWeight) {
+        Article from = articleService.getArticle(fromId);
+        Article to = articleService.getArticle(toId);
+
+        return useRecommendation(from, to, deltaWeight);
     }
 }

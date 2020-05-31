@@ -46,4 +46,20 @@ public interface RecommendationService {
      * @return Список статей
      */
     List<Article> getHotArticles();
+
+    /**
+     * Использование рекомендации
+     * @param from Статья, для которой была дана рекомендация
+     * @param to Использованная рекомендация
+     * @param deltaWeight Изменение веса
+     * @return
+     */
+    Article useRecommendation(Article from, Article to, Double deltaWeight);
+
+    /**
+     * Использование рекомендации
+     * @param fromId ID статьи, для которой была дана рекомендация
+     * @param toId ID статьи в использованной рекомендации
+     */
+    Article useRecommendation(Long fromId, Long toId, Double deltaWeight);
 }

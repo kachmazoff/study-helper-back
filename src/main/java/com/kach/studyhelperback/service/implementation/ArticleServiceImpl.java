@@ -1,24 +1,16 @@
 package com.kach.studyhelperback.service.implementation;
 
-import com.kach.studyhelperback.model.Article;
-import com.kach.studyhelperback.model.ArticleLog;
-import com.kach.studyhelperback.model.ArticleType;
-import com.kach.studyhelperback.model.User;
+import com.kach.studyhelperback.config.ArticlesTransitionWeights;
+import com.kach.studyhelperback.model.*;
 import com.kach.studyhelperback.repository.ArticleRepository;
 import com.kach.studyhelperback.repository.ArticleTypeRepository;
-import com.kach.studyhelperback.service.ArticleService;
-import com.kach.studyhelperback.service.AuthService;
-import com.kach.studyhelperback.service.LogService;
-import com.kach.studyhelperback.service.UserService;
+import com.kach.studyhelperback.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -33,6 +25,8 @@ public class ArticleServiceImpl implements ArticleService {
     UserService userService;
     @Autowired
     AuthService authService;
+    @Autowired
+    ArticlesRelationsService articlesRelationsService;
 
     @Override
     public Article getArticle(Long id) {
@@ -46,6 +40,21 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Article getFullArticle(Long id) {
         Article article = getArticle(id);
+
+        if (authService.isAuthenticated()) {
+            User user = authService.getActiveUser();
+            List<ArticleLog> logs = logService.getLogs(user);
+
+            Date date = new Date();
+            final Long maxTimeDelta = 1000l * 60 * 60 * 24;
+            // Обновляем связи для статей, посещённых в последние 24 часа
+            for (int i = 0; i < logs.size(); i++) {
+                ArticleLog log = logs.get(i);
+                if (date.getTime() - log.getCreated().getTime() < maxTimeDelta && id != log.getArticle().getId())
+                    articlesRelationsService.useOrAddRelation(log.getArticle(), article, ArticlesTransitionWeights.RANDOM);
+            }
+        }
+
         logService.log(article);
         return article;
     }
@@ -60,9 +69,6 @@ public class ArticleServiceImpl implements ArticleService {
         for (int i = 0; i < 10 && i < articles.size(); i++)
             newArticles.add(articles.get(i));
 
-//        articleRepository.findAll(Sort.by()).forEach(articles::add);
-//        Date date = new Date();
-//        date.getTime();
         return newArticles;
     }
 

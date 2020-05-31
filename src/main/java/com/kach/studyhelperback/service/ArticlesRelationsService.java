@@ -37,4 +37,13 @@ public interface ArticlesRelationsService {
      * @return Список связей
      */
     List<ArticlesRelations> getRelations(Long articleId, Integer depth);
+
+    /**
+     * Использование связи или добавление новой
+     * @param from Статья, которая является зависимостью
+     * @param to Статья, которая является зависимостью
+     * @param deltaWeight Изменение веса связи
+     */
+    void useOrAddRelation(Article from, Article to, Double deltaWeight);
+    
 }

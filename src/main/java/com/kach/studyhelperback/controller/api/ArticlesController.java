@@ -1,17 +1,15 @@
 package com.kach.studyhelperback.controller.api;
 
+import com.kach.studyhelperback.config.ArticlesTransitionWeights;
 import com.kach.studyhelperback.model.Article;
 import com.kach.studyhelperback.model.ArticleComments;
 import com.kach.studyhelperback.model.ArticleType;
-import com.kach.studyhelperback.model.User;
 import com.kach.studyhelperback.repository.ArticleRepository;
 import com.kach.studyhelperback.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,10 +39,11 @@ public class ArticlesController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    AuthService authService;
 
     @GetMapping("")
     public List<Article> getAllArticles(@RequestParam Optional<Long> type) {
-//        recommendationService.getTopArticles();
         if (type.isEmpty())
             return articleService.getAllArticles();
         else
@@ -111,16 +110,16 @@ public class ArticlesController {
     @GetMapping("/{id}/recommendations")
     @PreAuthorize("isAuthenticated()")
     public List<Article> getRecommendations(@PathVariable("id") Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currUser = userService.getUser(authentication.getPrincipal().toString());
-        return recommendationService.get(currUser, id);
+        return recommendationService.get(authService.getActiveUser(), id);
     }
 
     @GetMapping("/recommendations")
     public List<Article> getCommonRecommendations() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User currUser = userService.getUser(authentication.getPrincipal().toString());
         return recommendationService.get();
     }
 
+    @GetMapping("/{from}/recommendation/{to}/use")
+    public Article useRecommendation(@PathVariable("from") Long from, @PathVariable("to") Long to) {
+        return recommendationService.useRecommendation(from, to, ArticlesTransitionWeights.DIRECT);
+    }
 }
