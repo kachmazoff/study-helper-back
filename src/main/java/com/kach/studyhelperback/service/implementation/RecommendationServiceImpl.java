@@ -43,7 +43,9 @@ public class RecommendationServiceImpl implements RecommendationService {
                 logsCounter.put(currArticleId, logsCounter.get(currArticleId) + 1);
         }
 
-        logsCounter.forEach((l, v) -> {System.out.println(l.toString() + " " + v.toString());});
+        logsCounter.forEach((l, v) -> {
+            System.out.println(l.toString() + " " + v.toString());
+        });
 
         return null;
     }
@@ -83,15 +85,17 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         List<Pair<Long, Integer>> logsCounter = new ArrayList<>();
 
-        logsCounterMap.forEach((l, v) -> {logsCounter.add(Pair.of(l, v));});
+        logsCounterMap.forEach((l, v) -> {
+            logsCounter.add(Pair.of(l, v));
+        });
         logsCounter.sort(Comparator.comparing(Pair::getSecond));
         Collections.reverse(logsCounter);
 
         List<Article> articles = new ArrayList<>();
-        for(int i = 0; i < logsCounter.size(); i++) {
+        for (int i = 0; i < logsCounter.size(); i++) {
             Pair curr = logsCounter.get(i);
-            articles.add(articleService.getArticle((Long)curr.getFirst()));
-            System.out.println( "Article №" + curr.getFirst().toString() + ", views: " + curr.getSecond().toString());
+            articles.add(articleService.getArticle((Long) curr.getFirst()));
+            System.out.println("Article №" + curr.getFirst().toString() + ", views: " + curr.getSecond().toString());
         }
         System.out.println();
         return articles;
