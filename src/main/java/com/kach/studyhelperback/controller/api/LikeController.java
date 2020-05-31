@@ -1,9 +1,11 @@
 package com.kach.studyhelperback.controller.api;
 
-import com.kach.studyhelperback.model.*;
-import com.kach.studyhelperback.repository.LikeRepository;
-import com.kach.studyhelperback.service.*;
+import com.kach.studyhelperback.model.Article;
+import com.kach.studyhelperback.service.AuthService;
+import com.kach.studyhelperback.service.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,33 +19,26 @@ public class LikeController {
     LikeService likeService;
 
     @Autowired
-    LikeRepository likeRepository;
-
-    @Autowired
     AuthService authService;
 
-    @GetMapping("/all")
-    public List<Like> getAllLikes(){
-        return likeRepository.findAll();
-    }
-
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/user/{id}/favorites")
-    public List<Like> getLikesOfUser(@PathVariable("id") Long userId){
-        return likeRepository.findAllByUser_Id(userId);
+    @GetMapping("/favorites")
+    public List<Article> getLikedArticlesOfUser(){
+        return likeService.getLikedArticles();
     }
 
-    @GetMapping("/article/{id}")
-    public List<Like> getLikeOfArticle(@PathVariable("id") Long articleId){
-        return likeRepository.findAllByArticle_Id(articleId);
-    }
-
-    @GetMapping("/checkLike/{id}")
+    @GetMapping("/check/{id}")
     public boolean checkLike(@PathVariable("id") Long articleId) throws Exception {
         if (authService.isAuthenticated()){
             return likeService.checkLikedArticle(articleId, authService.getActiveUser().getId());
         } else {
             throw new Exception("user isn't logged in");
         }
+    }
+
+    @PostMapping("/article/{id}")
+    public ResponseEntity changeArticleLike(@PathVariable("id") Long articleId) {
+        likeService.toggleArticleLike(articleId);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

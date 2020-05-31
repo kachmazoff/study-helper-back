@@ -4,7 +4,6 @@ import com.kach.studyhelperback.model.Article;
 import com.kach.studyhelperback.model.Like;
 import com.kach.studyhelperback.model.User;
 
-import java.util.Date;
 import java.util.List;
 
 public interface LikeService {
@@ -14,4 +13,6 @@ public interface LikeService {
     List<Like> getLikes(Long articleId);
     boolean checkLikedArticle(Long articleId, Long userId);
     List<Like> getLikes(User user);
+    void toggleArticleLike(Long articleId);
+    List<Article> getLikedArticles();
 }
