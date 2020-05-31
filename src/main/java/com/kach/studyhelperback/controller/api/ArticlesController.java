@@ -105,7 +105,7 @@ public class ArticlesController {
 
     @GetMapping("/{id}/stat")
     public Long getArticleViews(@PathVariable("id") Long articleId) {
-        return articleStatService.getArticleStat(articleId);
+        return articleStatService.getArticleViews(articleId);
     }
 
     @GetMapping("/{id}/recommendations")
