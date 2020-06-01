@@ -95,7 +95,7 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public List<Article> getLikedArticles() {
-        List<Like> likes = likeRepository.findAllByUser_IdAnAndStatus(authService.getActiveUser().getId(), EntityStatus.ACTIVE);
+        List<Like> likes = likeRepository.findAllByUser_IdAndStatus(authService.getActiveUser().getId(), EntityStatus.ACTIVE);
         List<Article> articles = new ArrayList<>();
         for (int i = 0; i < likes.size(); i++) {
             articles.add(likes.get(i).getArticle());
