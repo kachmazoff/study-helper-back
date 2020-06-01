@@ -33,12 +33,16 @@ public class ArticlesRelationsServiceImpl implements ArticlesRelationsService {
 
     @Override
     public void addRelation(Article from, Article to, Double weight) {
-        ArticlesRelations relation = new ArticlesRelations();
-        relation.setFrom(from);
-        relation.setTo(to);
-        relation.setWeight(weight);
+        Optional<ArticlesRelations> curr = articlesRelationsRepository.findByFromAndTo(from, to);
 
-        articlesRelationsRepository.save(relation);
+        if (curr.isEmpty()) {
+            ArticlesRelations relation = new ArticlesRelations();
+            relation.setFrom(from);
+            relation.setTo(to);
+            relation.setWeight(weight);
+
+            articlesRelationsRepository.save(relation);
+        }
     }
 
     @Override
@@ -64,8 +68,7 @@ public class ArticlesRelationsServiceImpl implements ArticlesRelationsService {
         Optional<ArticlesRelations> optionalArticlesRelations = articlesRelationsRepository.findByFromAndTo(from, to);
         if (optionalArticlesRelations.isEmpty()) {
             addRelation(from, to, deltaWeight);
-        }
-        else {
+        } else {
             ArticlesRelations articlesRelations = optionalArticlesRelations.get();
             articlesRelations.setUsageCounter(articlesRelations.getUsageCounter() + 1);
             articlesRelations.setWeight(articlesRelations.getWeight() + deltaWeight);
