@@ -1,5 +1,6 @@
 package com.kach.studyhelperback.service;
 
+import com.kach.studyhelperback.dto.helper.ArticleLogMin;
 import com.kach.studyhelperback.model.Article;
 import com.kach.studyhelperback.model.ArticleLog;
 import com.kach.studyhelperback.model.User;
@@ -47,4 +48,5 @@ public interface LogService {
      * @return Список логов
      */
     List<ArticleLog> getLogs(User user);
+    List<ArticleLogMin> getMinLogs();
 }
