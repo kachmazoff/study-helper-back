@@ -57,6 +57,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     public List<Article> get(User user, Article article) {
         List<ArticlesRelations> relations = articlesRelationsService.getRelations(article, 1);
         relations.sort(new ArticlesRelationsWeightComparator().thenComparing(new ArticlesRelationsUsageComparator()));
+        Collections.reverse(relations);
 
         List<Article> articles = new ArrayList<>();
 
