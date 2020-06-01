@@ -4,10 +4,9 @@ import com.kach.studyhelperback.model.ArticleLog;
 import com.kach.studyhelperback.model.User;
 import com.kach.studyhelperback.repository.ArticleLogRepository;
 import com.kach.studyhelperback.service.ArticleStatService;
+import com.kach.studyhelperback.service.AuthService;
 import com.kach.studyhelperback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,8 +22,11 @@ public class ArticleStatServiceImpl implements ArticleStatService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    AuthService authService;
+
     @Override
-    public Long getArticleStat(Long articleId) {
+    public Long getArticleViews(Long articleId) {
         List<ArticleLog> articleLogList = articleLogRepository.findAllByArticle_Id(articleId);
         return (Long) (long) articleLogList.size();
     }
@@ -40,8 +42,7 @@ public class ArticleStatServiceImpl implements ArticleStatService {
 
     @Override
     public Long getArticlesStatByDate(Date date) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User creator = userService.getUser(authentication.getPrincipal().toString());
+        User creator = authService.getActiveUser();
 
         List<ArticleLog> articleLogList = articleLogRepository.findAllByArticle_Creator_IdAndArticle_Created(
                 creator.getId(), date);
@@ -50,8 +51,7 @@ public class ArticleStatServiceImpl implements ArticleStatService {
 
     @Override
     public HashMap<String, Long> getArticlesStat() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User creator = userService.getUser(authentication.getPrincipal().toString());
+        User creator = authService.getActiveUser();
 
         List<ArticleLog> articleLogList = articleLogRepository.findAllByArticle_Creator_Id(creator.getId());
 

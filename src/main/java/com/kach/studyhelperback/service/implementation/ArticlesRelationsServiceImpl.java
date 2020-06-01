@@ -58,4 +58,18 @@ public class ArticlesRelationsServiceImpl implements ArticlesRelationsService {
         relationsFrom.addAll(relationsTo);
         return relationsFrom;
     }
+
+    @Override
+    public void useOrAddRelation(Article from, Article to, Double deltaWeight) {
+        Optional<ArticlesRelations> optionalArticlesRelations = articlesRelationsRepository.findByFromAndTo(from, to);
+        if (optionalArticlesRelations.isEmpty()) {
+            addRelation(from, to, deltaWeight);
+        }
+        else {
+            ArticlesRelations articlesRelations = optionalArticlesRelations.get();
+            articlesRelations.setUsageCounter(articlesRelations.getUsageCounter() + 1);
+            articlesRelations.setWeight(articlesRelations.getWeight() + deltaWeight);
+            articlesRelationsRepository.save(articlesRelations);
+        }
+    }
 }
