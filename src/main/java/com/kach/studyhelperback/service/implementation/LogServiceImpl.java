@@ -1,5 +1,6 @@
 package com.kach.studyhelperback.service.implementation;
 
+import com.kach.studyhelperback.dto.helper.ArticleLogMin;
 import com.kach.studyhelperback.model.Article;
 import com.kach.studyhelperback.model.ArticleLog;
 import com.kach.studyhelperback.model.User;
@@ -57,5 +58,10 @@ public class LogServiceImpl implements LogService {
     @Override
     public List<ArticleLog> getLogs(Date date) {
         return articleLogRepository.findAllByCreated(date);
+    }
+
+    @Override
+    public List<ArticleLogMin> getMinLogs() {
+        return articleLogRepository.findAllBy();
     }
 }
