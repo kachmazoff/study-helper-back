@@ -7,12 +7,12 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class ArticleStatController {
-
+    // TODO: hmm..
     @Autowired
     ArticleStatService articleStatService;
 
     public Long getArticleStat(Long articleId){
-        return articleStatService.getArticleStat(articleId);
+        return articleStatService.getArticleViews(articleId);
     }
 
     public Long getArticlesStatByDate(Date date){

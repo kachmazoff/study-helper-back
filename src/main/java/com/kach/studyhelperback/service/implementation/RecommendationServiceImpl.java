@@ -5,6 +5,8 @@ import com.kach.studyhelperback.model.Article;
 import com.kach.studyhelperback.model.ArticleLog;
 import com.kach.studyhelperback.model.ArticlesRelations;
 import com.kach.studyhelperback.model.User;
+import com.kach.studyhelperback.model.comparator.ArticlesRelationsUsageComparator;
+import com.kach.studyhelperback.model.comparator.ArticlesRelationsWeightComparator;
 import com.kach.studyhelperback.service.ArticleService;
 import com.kach.studyhelperback.service.ArticlesRelationsService;
 import com.kach.studyhelperback.service.LogService;
@@ -44,7 +46,9 @@ public class RecommendationServiceImpl implements RecommendationService {
                 logsCounter.put(currArticleId, logsCounter.get(currArticleId) + 1);
         }
 
-        logsCounter.forEach((l, v) -> {System.out.println(l.toString() + " " + v.toString());});
+        logsCounter.forEach((l, v) -> {
+            System.out.println(l.toString() + " " + v.toString());
+        });
 
         return null;
     }
@@ -52,6 +56,8 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Override
     public List<Article> get(User user, Article article) {
         List<ArticlesRelations> relations = articlesRelationsService.getRelations(article, 1);
+        relations.sort(new ArticlesRelationsWeightComparator().thenComparing(new ArticlesRelationsUsageComparator()));
+
         List<Article> articles = new ArrayList<>();
 
         for (ArticlesRelations relation : relations) {
@@ -84,11 +90,14 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         List<Pair<Long, Integer>> logsCounter = new ArrayList<>();
 
-        logsCounterMap.forEach((l, v) -> {logsCounter.add(Pair.of(l, v));});
+        logsCounterMap.forEach((l, v) -> {
+            logsCounter.add(Pair.of(l, v));
+        });
         logsCounter.sort(Comparator.comparing(Pair::getSecond));
         Collections.reverse(logsCounter);
 
         List<Article> articles = new ArrayList<>();
+
         for(int i = 0, j = 0; i < logsCounter.size() && j < 10; i++, j++) {
             Pair curr = logsCounter.get(i);
             articles.add(articleService.getArticle((Long)curr.getFirst()));
@@ -100,5 +109,19 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Override
     public List<Article> getHotArticles() {
         return null;
+    }
+
+    @Override
+    public Article useRecommendation(Article from, Article to, Double deltaWeight) {
+        articlesRelationsService.useOrAddRelation(from, to, deltaWeight);
+        return to;
+    }
+
+    @Override
+    public Article useRecommendation(Long fromId, Long toId, Double deltaWeight) {
+        Article from = articleService.getArticle(fromId);
+        Article to = articleService.getArticle(toId);
+
+        return useRecommendation(from, to, deltaWeight);
     }
 }
