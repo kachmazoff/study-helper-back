@@ -39,7 +39,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         Map<Long, Integer> logsCounter = new HashMap<>();
         for (ArticleLog log : logs) {
-            Long currArticleId = log.getArticle().getId();sy
+            Long currArticleId = log.getArticle().getId();
             if (!logsCounter.containsKey(currArticleId))
                 logsCounter.put(currArticleId, 1);
             else
